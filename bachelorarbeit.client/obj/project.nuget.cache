@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "iMjZXBq3HiU=",
+  "success": false,
+  "projectFilePath": "C:\\Users\\Anwender\\source\\repos\\Bachelorarbeit\\bachelorarbeit.client\\bachelorarbeit.client.esproj",
+  "expectedPackageFiles": [],
+  "logs": [
+    {
+      "code": "NU1012",
+      "level": "Error",
+      "message": "Platform version is not present for one or more target frameworks, even though they have specified a platform: net6.0-none"
+    }
+  ]
+}

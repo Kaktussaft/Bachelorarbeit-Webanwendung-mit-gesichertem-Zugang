@@ -1,0 +1,6 @@
+@Bachelorarbeit.Server_HostAddress = http://localhost:5171
+
+GET {{Bachelorarbeit.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
