@@ -1,0 +1,102 @@
+<div class="login-site hide-overflow">
+  <!-- Login Form -->
+  <div class="login-form" *ngIf="showLoginForm">
+    <div class="login-container">
+      <button class="login-window" (click)="toggleLoginAndRegisterForm()">
+        Register
+      </button>
+    </div>
+    <form (ngSubmit)="login()" #loginForm="ngForm">
+      <div class="form-item">
+        <span class="icon"><i class="fa fa-user"></i></span>
+        <input
+          type="text"
+          placeholder="Username"
+          name="username"
+          [(ngModel)]="loginData.username"
+          required
+          #username="ngModel"
+        />
+      </div>
+      <div class="form-item">
+        <span class="icon"><i class="fa fa-lock"></i></span>
+        <input
+          [type]="passwordType"
+          placeholder="Password"
+          name="password"
+          [(ngModel)]="loginData.password"
+          required
+          #password="ngModel"
+        />
+      </div>
+      <button
+        class="login-button"
+        type="submit"
+        [disabled]="!loginForm.form.valid"
+      >
+        Login
+      </button>
+    </form>
+  </div>
+  <!-- Register Form -->
+  <div class="register-form" *ngIf="!showLoginForm">
+    <div class="login-container">
+      <button class="login-window" (click)="toggleLoginAndRegisterForm()">
+        Login
+      </button>
+    </div>
+    <form (ngSubmit)="register()" #registerForm="ngForm">
+      <div class="form-item">
+        <span class="icon"><i class="fa fa-user"></i></span>
+        <input
+          type="text"
+          placeholder="Username"
+          name="username"
+          [(ngModel)]="registerData.username"
+          required
+          #regUsername="ngModel"
+        />
+      </div>
+      <div class="form-item">
+        <span class="icon"><i class="fa fa-envelope"></i></span>
+        <input
+          type="email"
+          placeholder="Email"
+          name="email"
+          [(ngModel)]="registerData.email"
+          required
+          #email="ngModel"
+        />
+      </div>
+      <div class="form-item">
+        <span class="icon"><i class="fa fa-lock"></i></span>
+        <input
+          [type]="passwordType"
+          placeholder="Password"
+          name="password"
+          [(ngModel)]="registerData.password"
+          required
+          #regPassword="ngModel"
+        />
+      </div>
+      <div class="form-item">
+        <span class="icon"><i class="fa fa-lock"></i></span>
+        <input
+          [type]="passwordType"
+          placeholder="Confirm password"
+          name="confirmPassword"
+          [(ngModel)]="registerData.confirmPassword"
+          required
+          #confirmPassword="ngModel"
+        />
+      </div>
+      <button
+        class="login-button"
+        type="submit"
+        [disabled]="!registerForm.form.valid"
+      >
+        Register
+      </button>
+    </form>
+  </div>
+</div>
