@@ -7,6 +7,8 @@
 /bazel-out
 **/bin/
 **/obj/
+../**/bin/ 
+../**/obj/  
 
 
 # Node
