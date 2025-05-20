@@ -21,7 +21,7 @@ public class UserRepository : IUserRepository
     public async Task<UserModel> GetByIdAsync(Guid id)
     {
         var user = await _dbContext.Users.FindAsync(id);
-        if (user == null)
+        if(user == null)
             return null;
 
         return _mapper.Map<UserModel>(user);
@@ -76,4 +76,15 @@ public class UserRepository : IUserRepository
         
         return _mapper.Map<UserModel>(user);
     }
+    
+    public async Task SaveChangesAsync()
+    {
+         await _dbContext.SaveChangesAsync();
+    }
+
+    public void Save()
+    {
+        _dbContext.SaveChanges();
+    }
+
 }

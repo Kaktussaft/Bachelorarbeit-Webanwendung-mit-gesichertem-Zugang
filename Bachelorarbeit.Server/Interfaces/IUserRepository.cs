@@ -11,4 +11,6 @@ public interface IUserRepository
     Task<UserModel> DeleteAsync(Guid id);
     Task<UserModel> GetByUsernameAsync(string username);
     Task<UserModel> GetByEmailAsync(string email);
+    Task SaveChangesAsync();
+    void Save();
 }
