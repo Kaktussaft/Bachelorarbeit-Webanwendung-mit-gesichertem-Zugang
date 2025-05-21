@@ -7,10 +7,9 @@ namespace Bachelorarbeit.Server.Interfaces;
 public interface IUserService
 {
     Task<RegistrationResponse> AddUser(string email, string password, string username);
-    bool VerifyEmailAndPassword(string email, string password);
-    byte[] GetRefreshToken(string email);
+    bool VerifyEmailAndPassword(UserModel user, string email, string password);
+    Task<byte[]> GetRefreshToken(string email);
     RefreshTokenDto ReissueRefreshToken(byte[] oldRefreshToken);
-    string FindUsernameByToken(byte[] refreshToken);
     UserModel FindUserByUsername(string username);
     Task<bool> UpdateUser(UserModel entity);
     Task<bool> ResetPasswordAsync(string email, string password);

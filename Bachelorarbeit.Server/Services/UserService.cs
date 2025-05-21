@@ -17,20 +17,23 @@ public class UserService : IUserService
     }
     public async Task<RegistrationResponse> AddUser(string email, string password, string username)
     {
-        var userExists = await _userRepository.GetByEmailAsync(email);
-        if (userExists != null)
+        var userMailExists = await _userRepository.GetByEmailAsync(email) ;
+        var userUsernameExists = await _userRepository.GetByUsernameAsync(username);
+        
+        if (userUsernameExists != null)
         {
-            return new RegistrationResponse()
-            {
-                Message = "user already exists",
-                Success = false
-            };
+            return RegistrationResponse.GetUserNameExistsResponse();
         }
+
+        if (userMailExists != null)
+        {
+            return RegistrationResponse.GetUserMailExistsResponse();       
+        }
+        
         var salt = GeneratePasswordSalt();
         var hash = GeneratePasswordHash(password, salt);
         var refreshToken = GenerateRefreshToken();
-
-
+        
         var user = new UserModel
         {
             Email = email,
@@ -41,36 +44,41 @@ public class UserService : IUserService
             CreatedAt = DateTime.Now
         };
         
-        _userRepository.CreateAsync(user);
-        _userRepository.SaveChangesAsync();
+        await _userRepository.CreateAsync(user);
+        await _userRepository.SaveChangesAsync();
         
-        return new RegistrationResponse()
-        {
-            Message = "user created",
-            Success = true,
-            Token = Convert.ToBase64String(refreshToken)
-        };
+        return RegistrationResponse.GetSuccessfullRegistrationResponse(refreshToken);
     }
-    public bool VerifyEmailAndPassword(string email, string password)
+    public bool VerifyEmailAndPassword(UserModel user, string email, string password)
     {
-        return true;
+       var hash = GeneratePasswordHash(password, user.PasswordSalt);
+       var correctPassword = hash.SequenceEqual(user.PasswordHash);
+       return correctPassword;
     }
-    public byte[] GetRefreshToken(string email)
+    public async Task<byte[]> GetRefreshToken(string email)
     {
-        return new byte[0];
+        var user = await _userRepository.GetByEmailAsync(email);
+        return user?.RefreshToken;
     }
     public RefreshTokenDto ReissueRefreshToken(byte[] oldRefreshToken)
     {
-        return new RefreshTokenDto();
-    }
-    public string FindUsernameByToken(byte[] refreshToken)
-    {
-        return string.Empty;
-    }
+        var user = _userRepository.GetUserByRefreshTokenAsync(oldRefreshToken).Result;
+        if(user == null)
+            return null;
+        var newRefreshToken = GenerateRefreshToken();
+        user.RefreshToken = newRefreshToken;
 
+        return new RefreshTokenDto
+        {
+            RefreshToken = newRefreshToken,
+            Email = user.Email
+        };
+    }
+    
     public UserModel FindUserByUsername(string username)
     {
-        return new UserModel();
+       var user = _userRepository.GetByUsernameAsync(username).Result;
+       return user;
     }
     
     public Task<bool> UpdateUser(UserModel entity)
