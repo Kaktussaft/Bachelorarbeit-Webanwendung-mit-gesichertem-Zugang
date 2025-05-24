@@ -19,9 +19,7 @@ public class AuthenticationService
         _jwtConfiguration = jwtConfiguration;
     }
 
-    public AuthenticationResult Login(string email,
-        string username,
-        string password)
+    public AuthenticationResult Login(string email, string password)
     {
         var isValidUser = _userService.VerifyEmailAndPassword(email, password);
 
@@ -29,7 +27,8 @@ public class AuthenticationService
         {
             return AuthenticationResult.FailedAuthenticationResult("user is not valid");
         }
-
+        
+        var username = _userService.FindUserByUsername(email).Username;
         var accessToken = GenerateJwtToken(email, username);
         var refreshToken = Convert.ToBase64String(_userService.GetRefreshToken(email).Result);
 
@@ -47,8 +46,8 @@ public class AuthenticationService
 
         var accessToken = GenerateJwtToken(refreshTokenDto.Email, refreshTokenDto.Email);
         return AuthenticationResult.SuccessfulAuthenticationResult(
-            new JwtSecurityTokenHandler().WriteToken(accessToken), accessToken.ValidTo, 
-            Convert.ToBase64String(refreshTokenDto.RefreshToken) );
+            new JwtSecurityTokenHandler().WriteToken(accessToken), accessToken.ValidTo,
+            Convert.ToBase64String(refreshTokenDto.RefreshToken));
     }
 
     private JwtSecurityToken GenerateJwtToken(string email, string username)

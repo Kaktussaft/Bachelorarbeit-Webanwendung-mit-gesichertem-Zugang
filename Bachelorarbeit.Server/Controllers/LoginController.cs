@@ -12,12 +12,10 @@ namespace Bachelorarbeit.Server.Controllers;
 [ApiController]
 public class LoginController : ControllerBase
 {
-    private readonly IConfiguration _configuration;
     private readonly IAuthenticationService _authenticationService;
 
-    public LoginController(IConfiguration configuration, IAuthenticationService authenticationService)
+    public LoginController(IAuthenticationService authenticationService)
     {
-        _configuration = configuration;
         _authenticationService = authenticationService;
     }
 
@@ -27,7 +25,7 @@ public class LoginController : ControllerBase
     {
         var loginResult = _authenticationService.Login(request.Email, request.Password);
         if (!loginResult.IsSuccess)
-            return BadRequest(loginResult.Error);
+            return BadRequest(LoginResponse.GetFailedLoginResponse());
 
         return Ok(LoginResponse.GetSuccessfullLoginResponse(loginResult.RefreshToken));
     }

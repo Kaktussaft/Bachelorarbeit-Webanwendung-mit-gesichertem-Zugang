@@ -15,11 +15,12 @@ public class UserService : IUserService
     {
         _userRepository = userRepository;
     }
+
     public async Task<RegistrationResponse> AddUser(string email, string password, string username)
     {
-        var userMailExists = await _userRepository.GetByEmailAsync(email) ;
+        var userMailExists = await _userRepository.GetByEmailAsync(email);
         var userUsernameExists = await _userRepository.GetByUsernameAsync(username);
-        
+
         if (userUsernameExists != null)
         {
             return RegistrationResponse.GetUserNameExistsResponse();
@@ -27,13 +28,13 @@ public class UserService : IUserService
 
         if (userMailExists != null)
         {
-            return RegistrationResponse.GetUserMailExistsResponse();       
+            return RegistrationResponse.GetUserMailExistsResponse();
         }
-        
+
         var salt = GeneratePasswordSalt();
         var hash = GeneratePasswordHash(password, salt);
         var refreshToken = GenerateRefreshToken();
-        
+
         var user = new UserModel
         {
             Email = email,
@@ -43,30 +44,35 @@ public class UserService : IUserService
             Username = username,
             CreatedAt = DateTime.Now
         };
-        
+
         await _userRepository.CreateAsync(user);
         await _userRepository.SaveChangesAsync();
-        
-        return RegistrationResponse.GetSuccessfullRegistrationResponse(refreshToken);
+
+        return RegistrationResponse.GetSuccessfullRegistrationResponse();
     }
-    public bool VerifyEmailAndPassword(UserModel user, string email, string password)
+
+    public bool VerifyEmailAndPassword(string email, string password)
     {
-       var hash = GeneratePasswordHash(password, user.PasswordSalt);
-       var correctPassword = hash.SequenceEqual(user.PasswordHash);
-       return correctPassword;
+        var user = _userRepository.GetByEmailAsync(email).Result;
+        var hash = GeneratePasswordHash(password, user.PasswordSalt);
+        var correctPassword = hash.SequenceEqual(user.PasswordHash);
+        return correctPassword;
     }
+
     public async Task<byte[]> GetRefreshToken(string email)
     {
         var user = await _userRepository.GetByEmailAsync(email);
         return user?.RefreshToken;
     }
+
     public RefreshTokenDto ReissueRefreshToken(byte[] oldRefreshToken)
     {
         var user = _userRepository.GetUserByRefreshTokenAsync(oldRefreshToken).Result;
-        if(user == null)
+        if (user == null)
             return null;
         var newRefreshToken = GenerateRefreshToken();
         user.RefreshToken = newRefreshToken;
+        _userRepository.UpdateAsync(user).Wait();
 
         return new RefreshTokenDto
         {
@@ -74,18 +80,19 @@ public class UserService : IUserService
             Email = user.Email
         };
     }
-    
+
     public UserModel FindUserByUsername(string username)
     {
-       var user = _userRepository.GetByUsernameAsync(username).Result;
-       return user;
+        var user = _userRepository.GetByUsernameAsync(username).Result;
+        return user;
     }
-    
+
     public Task<bool> UpdateUser(UserModel entity)
     {
         return Task.FromResult(true);
     }
-    public Task<bool>  ResetPasswordAsync(string email, string password)
+
+    public Task<bool> ResetPasswordAsync(string email, string password)
     {
         return Task.FromResult(true);
     }
@@ -107,6 +114,7 @@ public class UserService : IUserService
             return randomNumber;
         }
     }
+
     public byte[] GeneratePasswordSalt()
     {
         var salt = new byte[32];
@@ -114,7 +122,7 @@ public class UserService : IUserService
         {
             rng.GetBytes(salt);
         }
-        return salt;
 
+        return salt;
     }
 }

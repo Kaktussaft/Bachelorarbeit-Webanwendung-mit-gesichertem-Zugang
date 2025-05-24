@@ -7,10 +7,11 @@ public interface IUserRepository
     Task<UserModel> GetByIdAsync(Guid id);
     Task<IEnumerable<UserModel>> GetAllAsync();
     Task<UserModel> CreateAsync(UserModel user);
-    Task<UserModel> UpdateAsync(UserModel user);
+    Task<bool> UpdateAsync(UserModel user);
     Task<UserModel> DeleteAsync(Guid id);
     Task<UserModel> GetByUsernameAsync(string username);
     Task<UserModel> GetByEmailAsync(string email);
+    Task<UserModel> GetUserByRefreshTokenAsync(byte[] refreshToken);
     Task SaveChangesAsync();
     void Save();
 }
