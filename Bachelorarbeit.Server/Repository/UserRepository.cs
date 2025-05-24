@@ -1,8 +1,6 @@
 ﻿using Bachelorarbeit.Server.Interfaces;
 using Bachelorarbeit.Server.Models;
-using Bachelorarbeit.Server.Mappings;
 using AutoMapper;
-using Bachelorarbeit.Server.Repository.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bachelorarbeit.Server.Repository;
@@ -39,14 +37,16 @@ public class UserRepository : IUserRepository
         return _mapper.Map<UserModel>(newUser.Entity);
     }
 
-    public async Task<UserModel> UpdateAsync(UserModel user)
+    public async Task<bool> UpdateAsync(UserModel newUser)
     {
-        var oldUser = await _dbContext.Users.FindAsync(user.Id);
+        var oldUser = await _dbContext.Users.FindAsync(newUser.Id);
         if (oldUser == null)
-            return null;
-
-        var result = _dbContext.Update(oldUser);
-        return _mapper.Map<UserModel>(result.Entity);
+            return false;
+    
+        _mapper.Map(newUser, oldUser); 
+        _dbContext.Update(oldUser);
+        await _dbContext.SaveChangesAsync();
+        return true;
     }
 
     public async Task<UserModel> DeleteAsync(Guid id)
@@ -76,6 +76,16 @@ public class UserRepository : IUserRepository
         
         return _mapper.Map<UserModel>(user);
     }
+
+    public async Task<UserModel> GetUserByRefreshTokenAsync(byte[] refreshToken)
+    {
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+        if (user == null)
+            return null;
+        
+        return _mapper.Map<UserModel>(user);
+    }
+    
     
     public async Task SaveChangesAsync()
     {
