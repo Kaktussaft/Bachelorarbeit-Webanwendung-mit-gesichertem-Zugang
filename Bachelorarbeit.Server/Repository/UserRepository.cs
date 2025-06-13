@@ -1,6 +1,7 @@
 ﻿using Bachelorarbeit.Server.Interfaces;
 using Bachelorarbeit.Server.Models;
 using AutoMapper;
+using Bachelorarbeit.Server.Repository.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bachelorarbeit.Server.Repository;
@@ -16,7 +17,7 @@ public class UserRepository : IUserRepository
         _mapper = mapper;
     }
 
-    public async Task<UserModel> GetByIdAsync(Guid id)
+    public async Task<UserModel?> GetByIdAsync(Guid id)
     {
         var user = await _dbContext.Users.FindAsync(id);
         if(user == null)
@@ -31,9 +32,11 @@ public class UserRepository : IUserRepository
         return _mapper.Map<IEnumerable<UserModel>>(users);
     }
 
-    public async Task<UserModel> CreateAsync(UserModel user)
+    public async Task<UserModel> CreateAsync(UserModel userModel)
     {
-        var newUser = await _dbContext.AddAsync(user);
+        var userEntity = _mapper.Map<UserEntity>(userModel); 
+        var newUser = await _dbContext.Users.AddAsync(userEntity);
+        await _dbContext.SaveChangesAsync(); 
         return _mapper.Map<UserModel>(newUser.Entity);
     }
 
@@ -49,17 +52,18 @@ public class UserRepository : IUserRepository
         return true;
     }
 
-    public async Task<UserModel> DeleteAsync(Guid id)
+    public async Task<UserModel?> DeleteAsync(Guid id)
     {
         var userToDelete = await _dbContext.Users.FindAsync(id);
         if (userToDelete == null)
             return null;
 
-        var result = _dbContext.Remove(userToDelete);
+        var result = _dbContext.Users.Remove(userToDelete);
+        await _dbContext.SaveChangesAsync();
         return _mapper.Map<UserModel>(result.Entity);
     }
 
-    public async Task<UserModel> GetByUsernameAsync(string username)
+    public async Task<UserModel?> GetByUsernameAsync(string username)
     {
         var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
         if (user == null)
@@ -68,7 +72,7 @@ public class UserRepository : IUserRepository
         return _mapper.Map<UserModel>(user);
     }
 
-    public async Task<UserModel> GetByEmailAsync(string email)
+    public async Task<UserModel?> GetByEmailAsync(string email)
     {
         var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
         if (user == null)
@@ -77,7 +81,7 @@ public class UserRepository : IUserRepository
         return _mapper.Map<UserModel>(user);
     }
 
-    public async Task<UserModel> GetUserByRefreshTokenAsync(byte[] refreshToken)
+    public async Task<UserModel?> GetUserByRefreshTokenAsync(byte[] refreshToken)
     {
         var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
         if (user == null)
@@ -85,16 +89,4 @@ public class UserRepository : IUserRepository
         
         return _mapper.Map<UserModel>(user);
     }
-    
-    
-    public async Task SaveChangesAsync()
-    {
-         await _dbContext.SaveChangesAsync();
-    }
-
-    public void Save()
-    {
-        _dbContext.SaveChanges();
-    }
-
 }

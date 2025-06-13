@@ -16,7 +16,7 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
-    public async Task<RegistrationResponse> AddUser(string email, string password, string username)
+    public async Task<RegistrationResponse> AddUser(string username, string email, string password )
     {
         var userMailExists = await _userRepository.GetByEmailAsync(email);
         var userUsernameExists = await _userRepository.GetByUsernameAsync(username);
@@ -42,11 +42,11 @@ public class UserService : IUserService
             PasswordSalt = salt,
             RefreshToken = refreshToken,
             Username = username,
-            CreatedAt = DateTime.Now
+            CreatedAt =  DateTimeOffset.Now.ToUniversalTime()
+
         };
 
         await _userRepository.CreateAsync(user);
-        await _userRepository.SaveChangesAsync();
 
         return RegistrationResponse.GetSuccessfullRegistrationResponse();
     }
@@ -117,12 +117,11 @@ public class UserService : IUserService
 
     public byte[] GeneratePasswordSalt()
     {
-        var salt = new byte[32];
+        var salt = new byte[16];
         using (var rng = RandomNumberGenerator.Create())
         {
             rng.GetBytes(salt);
+            return salt;
         }
-
-        return salt;
     }
 }
