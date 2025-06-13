@@ -7,6 +7,11 @@ Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "bachelorarbeit.client", "ba
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bachelorarbeit.Server", "Bachelorarbeit.Server\Bachelorarbeit.Server.csproj", "{90AB4487-DAE6-4289-AF12-880B1B5013CA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D3285459-BB4E-4386-992D-76299555F244}"
+	ProjectSection(SolutionItems) = preProject
+		compose.yaml = compose.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
