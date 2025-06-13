@@ -1,6 +1,7 @@
 ﻿using System;
 using Bachelorarbeit.Server.Controllers.Requests;
 using Bachelorarbeit.Server.Controllers.Responses;
+using Bachelorarbeit.Server.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Bachelorarbeit.Server.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -25,8 +26,13 @@ public class LoginController : ControllerBase
     {
         var loginResult = _authenticationService.Login(request.Email, request.Password);
         if (!loginResult.IsSuccess)
-            return BadRequest(LoginResponse.GetFailedLoginResponse());
+            return BadRequest("Invalid credentials");
 
-        return Ok(LoginResponse.GetSuccessfullLoginResponse(loginResult.RefreshToken));
+        return Ok( new LoginTokenDto()
+        {
+            AccessToken = loginResult.AccessToken,
+            Expiration = loginResult.AccessTokenExpiration,
+            RefreshToken = loginResult.RefreshToken
+        });
     }
 }
