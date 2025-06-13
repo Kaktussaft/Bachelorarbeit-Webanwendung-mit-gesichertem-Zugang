@@ -7,13 +7,13 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Bachelorarbeit.Server.Services;
 
-public class AuthenticationService
+public class AuthenticationService : IAuthenticationService
 {
     private readonly IUserService _userService;
-    private readonly JWT_Configuration _jwtConfiguration;
+    private readonly JwtConfiguration _jwtConfiguration;
 
     public AuthenticationService(IUserService userService,
-        JWT_Configuration jwtConfiguration)
+        JwtConfiguration jwtConfiguration)
     {
         _userService = userService;
         _jwtConfiguration = jwtConfiguration;
