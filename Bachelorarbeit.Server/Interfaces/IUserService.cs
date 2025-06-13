@@ -10,7 +10,7 @@ public interface IUserService
     bool VerifyEmailAndPassword( string email, string password);
     Task<byte[]> GetRefreshToken(string email);
     RefreshTokenDto ReissueRefreshToken(byte[] oldRefreshToken);
-    UserModel FindUserByUsername(string username);
+    UserModel FindUserByUserMail(string username);
     Task<bool> UpdateUser(UserModel entity);
     Task<bool> ResetPasswordAsync(string email, string password);
     byte[] GeneratePasswordSalt();

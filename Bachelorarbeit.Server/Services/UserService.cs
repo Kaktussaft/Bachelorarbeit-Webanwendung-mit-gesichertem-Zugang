@@ -81,9 +81,9 @@ public class UserService : IUserService
         };
     }
 
-    public UserModel FindUserByUsername(string username)
+    public UserModel FindUserByUserMail(string userMail)
     {
-        var user = _userRepository.GetByUsernameAsync(username).Result;
+        var user = _userRepository.GetByEmailAsync(userMail).Result;
         return user;
     }
 

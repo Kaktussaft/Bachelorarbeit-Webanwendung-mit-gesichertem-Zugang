@@ -28,7 +28,7 @@ public class AuthenticationService : IAuthenticationService
             return AuthenticationResult.FailedAuthenticationResult("user is not valid");
         }
         
-        var username = _userService.FindUserByUsername(email).Username;
+        var username = _userService.FindUserByUserMail(email).Username;
         var accessToken = GenerateJwtToken(email, username);
         var refreshToken = Convert.ToBase64String(_userService.GetRefreshToken(email).Result);
 
@@ -59,8 +59,17 @@ public class AuthenticationService : IAuthenticationService
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfiguration.SecurityKey));
-        var hashedKey = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+        var keyBytes = Encoding.UTF8.GetBytes(_jwtConfiguration.SecurityKey);
+        
+        if (keyBytes.Length < 32)
+        {
+            var paddedKey = new byte[32];
+            Array.Copy(keyBytes, paddedKey, Math.Min(keyBytes.Length, 32));
+            keyBytes = paddedKey;
+        }
+        
+        var key = new SymmetricSecurityKey(keyBytes);
+        var hashedKey = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
         var jasonWebToken = new JwtSecurityToken(_jwtConfiguration.Audience, _jwtConfiguration.Consumer, claims,
             expires: DateTime.UtcNow.AddMinutes(_jwtConfiguration.ExpirationInMinutes), signingCredentials: hashedKey);
 
