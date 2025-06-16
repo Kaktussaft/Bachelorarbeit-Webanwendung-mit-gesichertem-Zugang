@@ -54,6 +54,9 @@ public class UserService : IUserService
     public bool VerifyEmailAndPassword(string email, string password)
     {
         var user = _userRepository.GetByEmailAsync(email).Result;
+        if (user == null)
+            return false;
+        
         var hash = GeneratePasswordHash(password, user.PasswordSalt);
         var correctPassword = hash.SequenceEqual(user.PasswordHash);
         return correctPassword;
