@@ -7,8 +7,8 @@
 /bazel-out
 **/bin/
 **/obj/
-../**/bin/ 
-../**/obj/  
+../**/bin/
+../**/obj/
 
 
 # Node
@@ -26,7 +26,7 @@ yarn-error.log
 *.sublime-workspace
 .rider/
 *.DotSettings.user
-
+.vscode/
 
 
 # Visual Studio Code
