@@ -15,8 +15,9 @@ export class LoginComponent {
   passwordType: string = 'password';
   eyeIcon: string = 'fa-eye-slash';
   showLoginForm: boolean = true;
-  loginData = { username: '', password: '' };
-  registerData = { username: '', email: '', password: '', confirmPassword: '' };
+  loginData = { email: '', password: '' };
+  registrationFormData = { username: '', email: '', password: '', confirmPassword: '' };
+  registrationData = { username: '', email: '', password: '' };
 
   constructor(private readonly authService: AuthService, private readonly router: Router) {}
 
@@ -26,9 +27,7 @@ export class LoginComponent {
 
   login() {
     this.authService.login(this.loginData).subscribe({
-      next: (response) => {
-        localStorage.setItem('loginToken', response.token);
-        this.authService.setAuthenticated(true);
+      next: () => {
         this.router.navigate(['/home']);
       },
       error: (error) => {
@@ -38,7 +37,16 @@ export class LoginComponent {
   }
 
   register(){
-    this.authService.register(this.registerData).subscribe({
+    if (this.registrationFormData.password !== this.registrationFormData.confirmPassword){
+      console.error('Passwords do not match');
+      return;
+    }
+
+    this.registrationData.username = this.registrationFormData.username;
+    this.registrationData.email = this.registrationFormData.email;
+    this.registrationData.password = this.registrationFormData.password;
+
+    this.authService.register(this.registrationData).subscribe({
       next: (response) => {
         console.log('Registration successful', response);
         this.toggleLoginAndRegisterForm();

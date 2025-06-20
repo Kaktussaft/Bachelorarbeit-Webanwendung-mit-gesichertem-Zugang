@@ -11,11 +11,11 @@
         <span class="icon"><i class="fa fa-user"></i></span>
         <input
           type="text"
-          placeholder="Username"
-          name="username"
-          [(ngModel)]="loginData.username"
+          placeholder="Email"
+          name="email"
+          [(ngModel)]="loginData.email"
           required
-          #username="ngModel"
+          #email="ngModel"
         />
       </div>
       <div class="form-item">
@@ -52,7 +52,7 @@
           type="text"
           placeholder="Username"
           name="username"
-          [(ngModel)]="registerData.username"
+          [(ngModel)]="registrationFormData.username"
           required
           #regUsername="ngModel"
         />
@@ -63,7 +63,7 @@
           type="email"
           placeholder="Email"
           name="email"
-          [(ngModel)]="registerData.email"
+          [(ngModel)]="registrationFormData.email"
           required
           #email="ngModel"
         />
@@ -74,7 +74,7 @@
           [type]="passwordType"
           placeholder="Password"
           name="password"
-          [(ngModel)]="registerData.password"
+          [(ngModel)]="registrationFormData.password"
           required
           #regPassword="ngModel"
         />
@@ -85,7 +85,7 @@
           [type]="passwordType"
           placeholder="Confirm password"
           name="confirmPassword"
-          [(ngModel)]="registerData.confirmPassword"
+          [(ngModel)]="registrationFormData.confirmPassword"
           required
           #confirmPassword="ngModel"
         />
