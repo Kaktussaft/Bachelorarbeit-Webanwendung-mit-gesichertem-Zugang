@@ -9,7 +9,7 @@
     grid-template-columns: 1fr 1fr;
     align-items: center;
     justify-content: center;
-    background-color: #e0850e;
+    background-color: #1d0acc;
 }
 
 .navigation-container-grid {
@@ -17,12 +17,12 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
     padding: 10px;
-    background-color: #e0850e;
+    background-color: #1d0acc;
 }
 
 .grid-item {
     background-color: #f0f0f0;
-    color: rgb(255, 136, 0);
+    color: #1d0acc;
     font-size: 30px;
     font-weight: bold;
     font-family: 'Courier New', Courier, monospace;

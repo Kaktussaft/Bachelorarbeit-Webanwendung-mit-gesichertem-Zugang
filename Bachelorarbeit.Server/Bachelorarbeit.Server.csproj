@@ -8,7 +8,7 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <SpaRoot>..\bachelorarbeit.client</SpaRoot>
     <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
-    <SpaProxyServerUrl>https://localhost:54805</SpaProxyServerUrl>
+    <SpaProxyServerUrl>https://localhost:4201</SpaProxyServerUrl>
   </PropertyGroup>
 
   <ItemGroup>

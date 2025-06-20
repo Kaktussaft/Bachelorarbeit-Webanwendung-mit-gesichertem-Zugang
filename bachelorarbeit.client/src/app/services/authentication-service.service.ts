@@ -5,7 +5,7 @@ import {Observable, BehaviorSubject, catchError, throwError, map} from 'rxjs';
 import {environment} from '../environment/environment';
 
 interface LoginRequest {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -52,14 +52,14 @@ export class AuthService {
   }
 
   register(userData: RegistrationRequest): Observable<RegistrationResponse> {
-    return this.http.post<RegistrationResponse>(`${this.apiUrl}/register`, userData)
+    return this.http.post<RegistrationResponse>(`${this.apiUrl}/Register`, userData)
       .pipe(
         catchError(this.handleError)
       );
   }
 
   login(credentials: LoginRequest): Observable<LoginTokenDto> {
-    return this.http.post<LoginTokenDto>(`${this.apiUrl}/login`, credentials)
+    return this.http.post<LoginTokenDto>(`${this.apiUrl}/Login`, credentials)
       .pipe(
         map(response=>{
           localStorage.setItem('loginToken',response.accessToken);
