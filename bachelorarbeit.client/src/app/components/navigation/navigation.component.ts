@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterModule, RouterLink, RouterLinkActive } from '@angular/router';
-import { AuthService } from '../../services/authentication-service.service';
+import { AuthService } from '../../services/authentication-service/authentication-service.service';
 
 @Component({
   selector: 'app-navigation',
