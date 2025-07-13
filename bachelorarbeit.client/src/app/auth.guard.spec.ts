@@ -7,7 +7,7 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { AuthGuard } from './auth.guard';
-import { AuthService } from './services/authentication-service.service';
+import { AuthService } from './services/authentication-service/authentication-service.service';
 import { of } from 'rxjs';
 
 describe('AuthGuard', () => {
