@@ -16,46 +16,101 @@ export class LoginComponent {
   eyeIcon: string = 'fa-eye-slash';
   showLoginForm: boolean = true;
   loginData = { email: '', password: '' };
-  registrationFormData = { username: '', email: '', password: '', confirmPassword: '' };
+  registrationFormData = {
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  };
   registrationData = { username: '', email: '', password: '' };
+  isLoading = false;
+  errorMessage = '';
 
-  constructor(private readonly authService: AuthService, private readonly router: Router) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly router: Router
+  ) {}
+
+  async ngOnInit() {
+    await this.authService.refreshCSRFToken();
+  }
+
+  login() {
+    if (!this.loginData.email || !this.loginData.password) {
+      this.errorMessage = 'Please fill in all fields';
+      return;
+    }
+
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.authService.login(this.loginData).subscribe({
+      next: (response) => {
+        if (response.LoginResponse.success) {
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.errorMessage = response.LoginResponse.message || 'Login failed';
+        }
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.errorMessage = error.message || 'Login failed';
+        this.isLoading = false;
+      },
+    });
+  }
+
+  register() {
+    if (
+      !this.registrationFormData.username ||
+      !this.registrationFormData.email ||
+      !this.registrationFormData.password ||
+      !this.registrationFormData.confirmPassword
+    ) {
+      this.errorMessage = 'Please fill in all fields';
+      return;
+    }
+
+    if (
+      this.registrationFormData.password !==
+      this.registrationFormData.confirmPassword
+    ) {
+      this.errorMessage = 'Passwords do not match';
+      return;
+    }
+
+    this.registrationData = {
+      username: this.registrationFormData.username,
+      email: this.registrationFormData.email,
+      password: this.registrationFormData.password,
+    };
+
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.authService.register(this.registrationData).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.showLoginForm = true;
+          this.errorMessage = '';
+        } else {
+          this.errorMessage = response.message || 'Registration failed';
+        }
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.errorMessage = error.message || 'Registration failed';
+        this.isLoading = false;
+      },
+    });
+  }
 
   toggleLoginAndRegisterForm() {
     this.showLoginForm = !this.showLoginForm;
   }
 
-  login() {
-    this.authService.login(this.loginData).subscribe({
-      next: () => {
-        this.router.navigate(['/home']);
-      },
-      error: (error) => {
-        console.error('Login failed', error);
-      },
-    });
-  }
-
-  register(){
-    if (this.registrationFormData.password !== this.registrationFormData.confirmPassword){
-      console.error('Passwords do not match');
-      return;
-    }
-
-    this.registrationData.username = this.registrationFormData.username;
-    this.registrationData.email = this.registrationFormData.email;
-    this.registrationData.password = this.registrationFormData.password;
-
-    this.authService.register(this.registrationData).subscribe({
-      next: (response) => {
-        console.log('Registration successful', response);
-        this.toggleLoginAndRegisterForm();
-      },
-      error: (error) => {
-        console.error('Registration failed', error);
-      },
-    })
+  togglePasswordVisibility() {
+    this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
+    this.eyeIcon = this.eyeIcon === 'fa-eye-slash' ? 'fa-eye' : 'fa-eye-slash';
   }
 }
-
-
